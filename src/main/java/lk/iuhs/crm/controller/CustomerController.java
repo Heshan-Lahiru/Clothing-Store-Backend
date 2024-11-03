@@ -22,8 +22,6 @@ public class CustomerController {
     @PostMapping("/register")
     public CustomerDao customerRegisterAction(@RequestPart("customerDao") String customerDaoString,
                                               @RequestPart("multipartFile") MultipartFile multipartFile) throws IOException {
-
-        CustomerDao customerDao = objectMapper.readValue(customerDaoString, CustomerDao.class);
-        return customerServices.customerRegisterAction(customerDao, multipartFile);
+        return customerServices.customerRegisterAction(objectMapper.readValue(customerDaoString, CustomerDao.class), multipartFile);
     }
 }
