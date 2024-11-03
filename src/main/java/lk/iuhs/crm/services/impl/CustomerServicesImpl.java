@@ -1,7 +1,8 @@
 package lk.iuhs.crm.services.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lk.iuhs.crm.dao.CustomerDao;
+import lk.iuhs.crm.dao.customer.CustomerDao;
+import lk.iuhs.crm.dao.login.LoginDao;
 import lk.iuhs.crm.dto.CustomerDto;
 import lk.iuhs.crm.entity.CustomerEntity; // Ensure this is imported
 import lk.iuhs.crm.exception.CustomerException;
@@ -14,6 +15,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -37,8 +39,18 @@ public class CustomerServicesImpl implements CustomerServices {
             Files.write(filePath, multipartFile.getBytes());
             customerEntity1.setImage(fileName);
         }
+
         customerDto.save(customerEntity1);
         return objectMapper.convertValue(customerDao, CustomerDao.class);
 
+    }
+
+    @Override
+    public CustomerDao logincheck(LoginDao loginDao) {
+        Optional<CustomerEntity> byEmail = customerDto.findByEmail(loginDao.getEmail());
+        if(byEmail.isEmpty()){throw new CustomerException("customer not found");}
+        CustomerEntity customerEntity = byEmail.get();
+
+        return  objectMapper.convertValue(customerEntity, CustomerDao.class);
     }
 }

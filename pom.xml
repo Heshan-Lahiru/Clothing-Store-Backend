@@ -54,5 +54,12 @@
         <version>6.3.4</version>
     </dependency>
 
+    <dependency>
+        <groupId>de.mkammerer</groupId>
+        <artifactId>argon2-jvm</artifactId>
+        <version>2.9</version> <!-- Check for the latest version -->
+    </dependency>
+
+
 </dependencies>
 </project>

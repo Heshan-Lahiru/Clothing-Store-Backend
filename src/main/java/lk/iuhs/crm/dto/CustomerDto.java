@@ -9,4 +9,5 @@ import java.util.Optional;
 public interface CustomerDto extends CrudRepository<CustomerEntity, Integer> {
 
     Optional<CustomerEntity> findByEmail(String email);
+
 }
