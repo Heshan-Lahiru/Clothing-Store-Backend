@@ -6,7 +6,7 @@ import lk.iuhs.crm.dto.CustomerDto;
 import lk.iuhs.crm.entity.CustomerEntity; // Ensure this is imported
 import lk.iuhs.crm.exception.CustomerException;
 import lk.iuhs.crm.services.CustomerServices;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,14 +16,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 @Service
+@RequiredArgsConstructor
 public class CustomerServicesImpl implements CustomerServices {
     private static final String IMAGE_DIRECTORY = "src/main/resources/images";
 
-    @Autowired
-    private CustomerDto customerDto;
-
-    @Autowired
-    ObjectMapper objectMapper;
+    private final CustomerDto customerDto;
+    private final ObjectMapper objectMapper;
 
     @Override
     public CustomerDao customerRegisterAction(CustomerDao customerDao, MultipartFile multipartFile) throws IOException {
@@ -40,7 +38,7 @@ public class CustomerServicesImpl implements CustomerServices {
             customerEntity1.setImage(fileName);
         }
         customerDto.save(customerEntity1);
-        CustomerDao customerDao1 = objectMapper.convertValue(customerDao, CustomerDao.class);
-        return customerDao1;
+        return objectMapper.convertValue(customerDao, CustomerDao.class);
+
     }
 }
