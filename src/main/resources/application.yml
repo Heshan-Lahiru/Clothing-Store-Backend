@@ -10,3 +10,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+
+jwt:
+  secret: ${JWT_SECRET:12^5$#neded#*&#$#^&$#$6343}
+  expiration: 36000000

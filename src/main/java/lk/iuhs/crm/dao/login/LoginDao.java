@@ -6,5 +6,5 @@ import lombok.Data;
 public class LoginDao {
 
     private String email;
-
+    private String mypassword;
 }

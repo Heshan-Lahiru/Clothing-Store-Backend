@@ -13,5 +13,6 @@ public class CustomerDao {
     private String address;
     private String mobilenumber;
 
-
+    private String token;
+    private String role;
 }
