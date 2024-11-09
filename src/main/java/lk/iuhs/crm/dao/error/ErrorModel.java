@@ -1,4 +1,4 @@
-package lk.iuhs.crm.dao;
+package lk.iuhs.crm.dao.error;
 
 import lombok.Builder;
 import lombok.Data;

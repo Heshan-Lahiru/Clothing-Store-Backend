@@ -1,4 +1,4 @@
-package lk.iuhs.crm.entity;
+package lk.iuhs.crm.entity.customerentity;
 
 import jakarta.persistence.*;
 import lombok.Data;

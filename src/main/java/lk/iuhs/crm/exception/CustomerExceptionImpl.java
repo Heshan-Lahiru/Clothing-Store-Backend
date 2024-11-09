@@ -1,7 +1,6 @@
 package lk.iuhs.crm.exception;
 
 
-import lk.iuhs.crm.dao.ErrorModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;

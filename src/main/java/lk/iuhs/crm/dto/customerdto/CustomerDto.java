@@ -1,7 +1,7 @@
-package lk.iuhs.crm.dto;
+package lk.iuhs.crm.dto.customerdto;
 
 
-import lk.iuhs.crm.entity.CustomerEntity;
+import lk.iuhs.crm.entity.customerentity.CustomerEntity;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.Optional;

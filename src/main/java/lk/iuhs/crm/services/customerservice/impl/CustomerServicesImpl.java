@@ -1,15 +1,16 @@
-package lk.iuhs.crm.services.impl;
+package lk.iuhs.crm.services.customerservice.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lk.iuhs.crm.Component.JwtComponent;
 import lk.iuhs.crm.dao.customer.CustomerDao;
 import lk.iuhs.crm.dao.login.LoginDao;
-import lk.iuhs.crm.dto.CustomerDto;
-import lk.iuhs.crm.entity.CustomerEntity;
+import lk.iuhs.crm.dto.customerdto.CustomerDto;
+import lk.iuhs.crm.entity.customerentity.CustomerEntity;
 import lk.iuhs.crm.exception.CustomerException;
-import lk.iuhs.crm.services.CustomerServices;
+import lk.iuhs.crm.services.customerservice.CustomerServices;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,13 +20,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class CustomerServicesImpl implements CustomerServices {
-    private static final String IMAGE_DIRECTORY = "src/main/resources/images";
+    private static final String IMAGE_DIRECTORY = "src/main/resources/static/images/users";
 
     private final CustomerDto customerDto;
     private final ObjectMapper objectMapper;
@@ -48,11 +49,11 @@ public class CustomerServicesImpl implements CustomerServices {
         }
 
         customerDto.save(customerEntity1);
-        return objectMapper.convertValue(customerDao, CustomerDao.class);
+        return objectMapper.convertValue(customerEntity1, CustomerDao.class);
     }
 
     @Override
-    public CustomerDao logincheck(LoginDao loginDao) {
+    public CustomerDao logincheck(LoginDao loginDao) throws JsonProcessingException {
         Optional<CustomerEntity> byEmail = customerDto.findByEmail(loginDao.getEmail());
         if (byEmail.isEmpty()) {
             throw new CustomerException("Customer not found");
@@ -61,7 +62,7 @@ public class CustomerServicesImpl implements CustomerServices {
         CustomerEntity customerEntity = byEmail.get();
 
         if (customerEntity.getPassword().equalsIgnoreCase(loginDao.getMypassword())) {
-            String token = generateToken(customerEntity.getEmail());
+            String token = generateToken(customerEntity);
             CustomerDao customerDao = objectMapper.convertValue(customerEntity, CustomerDao.class);
             customerDao.setToken(token);
             if(loginDao.getMypassword().equalsIgnoreCase("ac9689e2272427085e35b9d3e3e8bed88cb3434828b43b86fc0596cad4c6e270")){customerDao.setRole("admin");}
@@ -72,13 +73,21 @@ public class CustomerServicesImpl implements CustomerServices {
         throw new CustomerException("Password is incorrect");
     }
 
-    private String generateToken(String email) {
+
+    private String generateToken(CustomerEntity customerEntity) throws JsonProcessingException {
+        // Convert CustomerEntity to Map using ObjectMapper
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, Object> customerData = objectMapper.convertValue(customerEntity, Map.class);
+
+        // Generate the token with the customer data as claims
         return Jwts.builder()
-                .setClaims(new HashMap<>())
-                .setSubject(email)
+                .setClaims(customerData)
+                .setSubject(customerEntity.getEmail())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + jwtProperties.getExpiration()))
                 .signWith(SignatureAlgorithm.HS512, jwtProperties.getSecret())
                 .compact();
     }
+
+
 }
