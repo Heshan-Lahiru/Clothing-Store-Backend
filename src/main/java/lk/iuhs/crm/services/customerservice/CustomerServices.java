@@ -6,9 +6,12 @@ import lk.iuhs.crm.dao.login.LoginDao;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 public interface CustomerServices {
     CustomerDao customerRegisterAction(CustomerDao customerDao, MultipartFile multipartFile) throws IOException;
 
     CustomerDao logincheck(LoginDao loginDao) throws JsonProcessingException;
+
+    List<CustomerDao> getcustomers();
 }

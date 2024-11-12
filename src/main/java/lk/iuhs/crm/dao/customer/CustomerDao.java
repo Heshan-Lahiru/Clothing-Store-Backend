@@ -5,6 +5,7 @@ import lombok.Data;
 @Data
 public class CustomerDao {
 
+    private Integer cus_id;
     private String name;
     private String email;
     private String image;

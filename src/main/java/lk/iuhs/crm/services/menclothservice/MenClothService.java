@@ -10,5 +10,11 @@ import java.util.List;
 public interface MenClothService {
     MenClothDao menclothadd(MenClothDao menClothDao, MultipartFile multipartFile) throws IOException;
 
-    List<MenClothDao> getmencloths();
+     List<MenClothDao> getmencloths(String type);
+
+    List<MenClothDao> getadminmencloths();
+
+    void deletemencloth(Integer menid);
+
+
 }

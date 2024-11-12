@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lk.iuhs.crm.dao.menclothdao.MenClothDao;
 import lk.iuhs.crm.dto.menclothdto.MenClothDto;
 import lk.iuhs.crm.entity.menclothentity.MenClothEntity;
+import lk.iuhs.crm.exception.CustomerException;
 import lk.iuhs.crm.services.menclothservice.MenClothService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -40,12 +42,33 @@ public class MenClothServiceImpl implements MenClothService {
     }
 
     @Override
-    public List<MenClothDao> getmencloths() {
-        Iterable<MenClothEntity> all = menClothDto.findAll();
+    public List<MenClothDao> getmencloths(String type) {
+        Iterable<MenClothEntity> all = menClothDto.findByType(type);
         List<MenClothDao> clothlistmen = new ArrayList<>();
         all.forEach(menClothEntity -> {
             clothlistmen.add(objectMapper.convertValue(menClothEntity,MenClothDao.class));
         });
         return clothlistmen;
+    }
+
+    @Override
+    public List<MenClothDao> getadminmencloths() {
+        Iterable<MenClothEntity> all = menClothDto.findAll();
+        List<MenClothDao> menClothDaoList = new ArrayList<>();
+        all.forEach(menClothEntity -> {
+            menClothDaoList.add(objectMapper.convertValue(menClothEntity,MenClothDao.class));
+        });
+        return menClothDaoList;
+    }
+
+    @Override
+    public void deletemencloth(Integer menid) {
+        Optional<MenClothEntity> byId = menClothDto.findById(menid);
+        if(byId.isPresent()) {
+            menClothDto.delete(byId.get());
+        }
+        else {
+            throw new CustomerException("error for delete cloths");
+        }
     }
 }

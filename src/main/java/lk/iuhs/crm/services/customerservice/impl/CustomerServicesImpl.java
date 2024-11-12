@@ -6,9 +6,11 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lk.iuhs.crm.Component.JwtComponent;
 import lk.iuhs.crm.dao.customer.CustomerDao;
+import lk.iuhs.crm.dao.kidclothdao.KidClothDao;
 import lk.iuhs.crm.dao.login.LoginDao;
 import lk.iuhs.crm.dto.customerdto.CustomerDto;
 import lk.iuhs.crm.entity.customerentity.CustomerEntity;
+import lk.iuhs.crm.entity.kidclothentity.KidClothEntity;
 import lk.iuhs.crm.exception.CustomerException;
 import lk.iuhs.crm.services.customerservice.CustomerServices;
 import lombok.RequiredArgsConstructor;
@@ -19,9 +21,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Date;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -73,13 +73,26 @@ public class CustomerServicesImpl implements CustomerServices {
         throw new CustomerException("Password is incorrect");
     }
 
+    @Override
+    public List<CustomerDao> getcustomers() {
+        Iterable<CustomerEntity> all = customerDto.findAll();
+        List<CustomerDao> customerDaoList = new ArrayList<>();
+        all.forEach(customerEntity -> {
+
+            if(!customerEntity.getEmail().equalsIgnoreCase("admin1234@gmail.com")){
+                customerDaoList.add(objectMapper.convertValue(customerEntity, CustomerDao.class));
+
+            }
+
+        });
+        return customerDaoList;
+    }
+
 
     private String generateToken(CustomerEntity customerEntity) throws JsonProcessingException {
-        // Convert CustomerEntity to Map using ObjectMapper
         ObjectMapper objectMapper = new ObjectMapper();
         Map<String, Object> customerData = objectMapper.convertValue(customerEntity, Map.class);
 
-        // Generate the token with the customer data as claims
         return Jwts.builder()
                 .setClaims(customerData)
                 .setSubject(customerEntity.getEmail())

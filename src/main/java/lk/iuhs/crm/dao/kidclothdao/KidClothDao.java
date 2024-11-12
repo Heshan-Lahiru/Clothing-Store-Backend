@@ -1,11 +1,11 @@
-package lk.iuhs.crm.dao.menclothdao;
+package lk.iuhs.crm.dao.kidclothdao;
 
 import lombok.Data;
 
 @Data
-public class MenClothDao {
+public class KidClothDao {
 
-    private Integer menid;
+    private Integer kidid;
     private String name;
     private String type;
     private String image;
